@@ -38,6 +38,10 @@ app.get("/api/call",(req,res,next) => {
     
 })
 
+// app.delete("/api/call/delete" , (req,res,next) => {
+//   console.log
+// })
+
 app.use((req,res,next) => {
     res.send('hello Worlds');
 });

@@ -30,13 +30,13 @@ const callSchema = mongoose.Schema({
         type: String,
         required :true
     },
-    ContactName:{
+    ContactPerson:{
         type: String,
-        // required :true
+        required :true
     },
     ContactNumber:{
         type: Number,
-        // required :true
+        required :true
     },
     Alternate_number:{
         type: Number
