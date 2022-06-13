@@ -18,10 +18,7 @@ app.use(express.json());
 app.use(cors());
 
 app.post("/api/call" , (req,res,next) => {
-  const call = new Call({
-    title : req.body.title,
-    description : req.body.description
-  }) ;
+  const call = new Call(req.body) ;
   call.save();
   console.log(call);
   res.status(201).json({

@@ -2,31 +2,39 @@ const mongoose = require('mongoose');
 
 const callSchema = mongoose.Schema({
 
-    title : {
+    Category : {
         type: String,
         required : true
     },
-    address1: {
+    Name: {
+        type: String,
+        required : true
+    },
+    MobileNumber : {
+        type: String,
+        required : true
+    },
+    Address1: {
         type: String,
         // required : true
     },
-    address2 :{
+    Address2 :{
         type: String,
         // required : true
     },
-    service_type:{
+    SubCategory:{
         type: String,
         // required :true
     },
-    description:{
+    Description:{
         type: String,
         required :true
     },
-    name:{
+    ContactName:{
         type: String,
         // required :true
     },
-    Number:{
+    ContactNumber:{
         type: Number,
         // required :true
     },
