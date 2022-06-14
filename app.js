@@ -38,9 +38,12 @@ app.get("/api/call",(req,res,next) => {
     
 })
 
-// app.delete("/api/call/delete" , (req,res,next) => {
-//   console.log
-// })
+app.delete("/api/call/:id" , (req,res,next) => {
+  console.log(req.params.id);
+  res.status(200).json({
+    message : 'Call Deleted'
+  });
+});
 
 app.use((req,res,next) => {
     res.send('hello Worlds');
