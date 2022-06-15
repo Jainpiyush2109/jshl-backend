@@ -5,6 +5,7 @@ const Call = require('./models/issues');
 const mongoose = require('mongoose');
 
 const app = express();
+const userRoutes = require('./routes/user');
 
 mongoose.connect(process.env.MONGO_CONNECTION_STRING, {useNewUrlParser: true})
   .then(()=> {
@@ -39,15 +40,21 @@ app.get("/api/call",(req,res,next) => {
 })
 
 app.delete("/api/call/:id" , (req,res,next) => {
-  console.log(req.params.id);
-  res.status(200).json({
-    message : 'Call Deleted'
+  Call.deleteOne({_id : req.params.id}).then(result=>{
+    console.log(result);
+    res.status(200).json({
+      message : 'Call Deleted'
+    });
   });
+  
 });
+app.use("/api/user" , userRoutes);
 
 app.use((req,res,next) => {
     res.send('hello Worlds');
 });
+
+
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
