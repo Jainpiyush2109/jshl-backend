@@ -38,9 +38,18 @@ const callSchema = mongoose.Schema({
         type: Number,
         required :true
     },
-    Alternate_number:{
+    AlternateMobile:{
         type: Number
     },
+    Slot:{
+        type:String,
+        required : true 
+    },
+    User :{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "User"
+        // required : true
+    }
 
 
 },{

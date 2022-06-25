@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const app = express();
 const userRoutes = require('./routes/user');
 const callsRoutes = require('./routes/calls');
+const checkAuth = require('./middleware/check-auth');
 
 mongoose.connect(process.env.MONGO_CONNECTION_STRING, {useNewUrlParser: true})
   .then(()=> {
@@ -16,10 +17,20 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING, {useNewUrlParser: true})
     console.log('connection failed', err);
   })
 
+  app.use(function(req, res, next) {
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');  
+    res.header("Access-Control-Allow-Headers", "Authorization");
+    
+    next();
+    
+    });
+
 app.use(express.json());
 app.use(cors());
 
-app.use('/api/call' , callsRoutes);
+app.use('/api/call' ,checkAuth , callsRoutes);
 
 app.use("/api/user" , userRoutes);
 

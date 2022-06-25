@@ -1,14 +1,53 @@
 const express = require('express');
+const multer = require("multer");
 const Call = require('../models/issues');
 
 const router = express.Router();
+const MIME_TYPE_MAP = {
+  'image/png' : 'png',
+  'image/jpeg' : 'jpg',
+  'image/jpg' : 'jpg'
+
+}
 const checkAuth = require('../middleware/check-auth');
+const storage = multer.diskStorage({
+  destination:(req,file,cb) =>{
+    const isvalid = MIME_TYPE_MAP[file.mimetype];
+    let error = new Error("invalid mime Type");
+    if(isvalid){
+      error = null;
+    }
+    cb(null , "backend/images");
+  },
+  filename:(req,file,cb) => {
+    const name = file.originalname.toLowerCase().split(' ').join('-');
+    const ext = MIME_TYPE_MAP[file.mimetype];
+    cb(null , name + '-' +Date.now() + '.' + ext);
+  }
+})
 
 
-router.post("" ,checkAuth, (req,res,next) => {
-    const call = new Call(req.body) ;
+router.post("" , checkAuth,
+//  multer({storage:storage}).single("image"),
+ (req,res,next) => {
+    const call = new Call({
+      Category: req.body.Category ,
+      Name:req.body.Name ,
+      MobileNumber:req.body.MobileNumber ,
+      Address1:req.body.Address1 ,
+      Address2:req.body.Address2 , 
+      SubCategory:req.body.SubCategory , 
+      Description:req.body.Description ,
+      ContactPerson:req.body.ContactPerson , 
+      ContactNumber:req.body.ContactNumber,
+      AlternateMobile : req.body.AlternateMobile,
+      Slot : req.body.Slot,
+      User : req.userData.userid  
+    }
+    
+      ) ; 
     call.save();
-    console.log(call);
+    // console.log(call);
     res.status(201).json({
       message: 'Post added Successfully'
     });
@@ -22,6 +61,7 @@ router.post("" ,checkAuth, (req,res,next) => {
           calls : calls
         });
       });  
+      
   });
   
   router.get("/:id" , (req,res,next) =>{
@@ -35,6 +75,7 @@ router.post("" ,checkAuth, (req,res,next) => {
   })
   
   router.put("/:id",(req,res,next) => {
+    // console.log(req.userData);
     
     const call = new Call({
       _id : req.body.id,
@@ -46,22 +87,36 @@ router.post("" ,checkAuth, (req,res,next) => {
       SubCategory:req.body.SubCategory , 
       Description:req.body.Description ,
       ContactPerson:req.body.ContactPerson , 
-      ContactNumber:req.body.ContactNumber
-        }) ;
-        console.log(call);
+      ContactNumber:req.body.ContactNumber,
+      AlternateMobile : req.body.AlternateMobile,
+      Slot : req.body.Slot,
+      User : req.body.User }
+
+       ) ;
+        // console.log(call);
+        console.log("yash", call.User , " " ,req.body.User);
   
-    Call.updateOne({_id : req.params.id},call).then(result =>{
-      console.log(result);
-      res.status(200).json({message : "update Succesful"})
+    Call.updateOne({_id : req.params.id ,User : req.userData.userid},call).then(result =>{ 
+        res.status(200).json({
+          message : 'Call Updated'
+        });
+      
+    
     });
   });
   
   router.delete("/:id" ,checkAuth, (req,res,next) => {
-    Call.deleteOne({_id : req.params.id}).then(result=>{
-      console.log(result);
-      res.status(200).json({
-        message : 'Call Deleted'
-      });
+    Call.deleteOne({_id : req.params.id , User : req.userData.userid}).then(result=>{
+      if(result.nModified > 0){
+        res.status(200).json({
+          message : 'Call Deleted'
+        });
+      }else{
+        res.status(401).json({
+          message : 'Unauthorized'
+        });
+      }
+      
     });
     
   });

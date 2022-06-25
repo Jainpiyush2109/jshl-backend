@@ -11,13 +11,11 @@ module.exports = (req,res,next) => {
            }else if (req.query && req.query.token) {
             token = req.query.token;
            }
-        jwt.verify(token ,"hbvhbhjbhvvhebdfufierhuav" ,(err, verifiedJwt) => {
-            if(err){
-              res.send(err.message)
-            }else{
-              res.send(verifiedJwt)
-            }
-        });
+        const decodedToken = jwt.verify(token ,"hbvhbhjbhvvhebdfufierhuav" );
+        req.userData = {
+            Name : decodedToken.name ,
+            userid : decodedToken.userid
+        }
         next();
     }catch(error){
         console.log(error);
