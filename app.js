@@ -1,5 +1,6 @@
 require('dotenv').config() ;
 const express = require("express");
+const path = require('path')
 const cors = require('cors')
 const Call = require('./models/issues');
 const mongoose = require('mongoose');
@@ -33,6 +34,7 @@ app.use(cors());
 app.use('/api/call' ,checkAuth , callsRoutes);
 
 app.use("/api/user" , userRoutes);
+app.use("/images" , express.static(path.join("images")));
 
 app.use((req,res,next) => {
     res.send('hello Worlds');

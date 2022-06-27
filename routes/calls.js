@@ -10,6 +10,7 @@ const MIME_TYPE_MAP = {
 
 }
 const checkAuth = require('../middleware/check-auth');
+const { createIndexes } = require('../models/issues');
 const storage = multer.diskStorage({
   destination:(req,file,cb) =>{
     const isvalid = MIME_TYPE_MAP[file.mimetype];
@@ -17,7 +18,7 @@ const storage = multer.diskStorage({
     if(isvalid){
       error = null;
     }
-    cb(null , "backend/images");
+    cb(null , "./images");
   },
   filename:(req,file,cb) => {
     const name = file.originalname.toLowerCase().split(' ').join('-');
@@ -27,9 +28,8 @@ const storage = multer.diskStorage({
 })
 
 
-router.post("" , checkAuth,
-//  multer({storage:storage}).single("image"),
- (req,res,next) => {
+router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,next) => {
+  const url =req.protocol + '://' +req.get("host");
     const call = new Call({
       Category: req.body.Category ,
       Name:req.body.Name ,
@@ -42,20 +42,26 @@ router.post("" , checkAuth,
       ContactNumber:req.body.ContactNumber,
       AlternateMobile : req.body.AlternateMobile,
       Slot : req.body.Slot,
-      User : req.userData.userid  
+      User : req.userData.userid  ,
+      imagePath : url + "/images/" + req.file.filename 
     }
     
       ) ; 
-    call.save();
-    // console.log(call);
-    res.status(201).json({
-      message: 'Post added Successfully'
-    });
+    call.save().then(createdCall =>{
+      res.status(201).json({
+        message: 'Post added Successfully',
+        call : {
+          ...createdCall ,
+          id : createdCall._id
+        }
+      });
+    })
+    
   
   });
   
   router.get("",(req,res,next) => {
-      Call.find().then(calls => {
+      Call.find({User : req.userData.userid}).then(calls => {
         res.status(200).json({
           message : 'post fetched',
           calls : calls
@@ -74,9 +80,13 @@ router.post("" , checkAuth,
     })
   })
   
-  router.put("/:id",(req,res,next) => {
-    // console.log(req.userData);
-    
+  router.put("/:id",multer({storage:storage}).single("image"),(req,res,next) => {
+    // let imagePath = req.body.imagePath;
+    console.log(req.body);
+    if(req.file){
+      const url =req.protocol + '://' +req.get("host");
+      const imagePath = url + "/images/" + req.file.filename 
+    }
     const call = new Call({
       _id : req.body.id,
       Category: req.body.Category ,
@@ -90,10 +100,12 @@ router.post("" , checkAuth,
       ContactNumber:req.body.ContactNumber,
       AlternateMobile : req.body.AlternateMobile,
       Slot : req.body.Slot,
-      User : req.body.User }
+      User : req.body.User
+      // imagePath : imagePath 
+    }
 
        ) ;
-        // console.log(call);
+        console.log(call);
         console.log("yash", call.User , " " ,req.body.User);
   
     Call.updateOne({_id : req.params.id ,User : req.userData.userid},call).then(result =>{ 
@@ -107,15 +119,9 @@ router.post("" , checkAuth,
   
   router.delete("/:id" ,checkAuth, (req,res,next) => {
     Call.deleteOne({_id : req.params.id , User : req.userData.userid}).then(result=>{
-      if(result.nModified > 0){
         res.status(200).json({
           message : 'Call Deleted'
         });
-      }else{
-        res.status(401).json({
-          message : 'Unauthorized'
-        });
-      }
       
     });
     
