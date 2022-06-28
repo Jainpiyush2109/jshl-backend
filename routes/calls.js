@@ -81,12 +81,14 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
   })
   
   router.put("/:id",multer({storage:storage}).single("image"),(req,res,next) => {
-    // let imagePath = req.body.imagePath;
+    // // let imagePath = req.body.imagePath;
     console.log(req.body);
+    let imagePath;
     if(req.file){
       const url =req.protocol + '://' +req.get("host");
-      const imagePath = url + "/images/" + req.file.filename 
+      imagePath = url + "/images/" + req.file.filename 
     }
+    console.log(imagePath);
     const call = new Call({
       _id : req.body.id,
       Category: req.body.Category ,
@@ -100,8 +102,8 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
       ContactNumber:req.body.ContactNumber,
       AlternateMobile : req.body.AlternateMobile,
       Slot : req.body.Slot,
-      User : req.body.User
-      // imagePath : imagePath 
+      User : req.body.User,
+      imagePath : imagePath 
     }
 
        ) ;

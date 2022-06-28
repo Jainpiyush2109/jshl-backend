@@ -30,6 +30,7 @@ router.post("/signup", (req,res,next) => {
 
 router.post("/login" , (req,res,next) =>{
     let fetchedUser ;
+
     User.findOne({Name : req.body.Name})
         .then(user =>{
             if (!user){
@@ -38,6 +39,7 @@ router.post("/login" , (req,res,next) =>{
                 });
             }
             fetchedUser = user ;
+            console.log("login initailised");
             return bcrypt.compare(req.body.Password , user.Password);
         })
         .then(result =>{
