@@ -30,6 +30,7 @@ router.post("/signup", (req,res,next) => {
 
 router.post("/login" , (req,res,next) =>{
     let fetchedUser ;
+    console.log(req.body);
 
     User.findOne({Name : req.body.Name})
         .then(user =>{
