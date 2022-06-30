@@ -61,34 +61,48 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
   });
   
   router.get("",(req,res,next) => {
+      console.log(req.userData);
+      if(req.userData.role == "admin"){
+        Call.find().then(calls => {
+          res.status(200).json({
+            message : 'post fetched',
+            calls : calls
+          });
+        }); 
+      }else {
       Call.find({User : req.userData.userid}).then(calls => {
         res.status(200).json({
           message : 'post fetched',
           calls : calls
         });
-      });  
+      });
+    }  
       
   });
   
   router.get("/:id" , (req,res,next) =>{
     Call.findById(req.params.id).then(call =>{
       if(call){
+        if(req.userData.userid == call.User){
         res.status(200).json(call);
+        }else{
+          res.status(404).json({message : 'User Not Allowed'});
+        }
       }else{
-        res.status(404).json({message : 'Call Not Found'})
+        res.status(404).json({message : 'Call Not Found'});
       }
     })
   })
   
   router.put("/:id",multer({storage:storage}).single("image"),(req,res,next) => {
     // // let imagePath = req.body.imagePath;
-    console.log(req.body);
+    // console.log(req.body);
     let imagePath;
     if(req.file){
       const url =req.protocol + '://' +req.get("host");
       imagePath = url + "/images/" + req.file.filename 
     }
-    console.log(imagePath);
+    // console.log(imagePath);
     const call = new Call({
       _id : req.body.id,
       Category: req.body.Category ,
@@ -107,8 +121,6 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
     }
 
        ) ;
-        console.log(call);
-        console.log("yash", call.User , " " ,req.body.User);
   
     Call.updateOne({_id : req.params.id ,User : req.userData.userid},call).then(result =>{ 
         res.status(200).json({
