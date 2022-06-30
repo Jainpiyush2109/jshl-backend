@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
 
-    Name: {
-        type : String,
-        required : true
+    Number: {
+        type : Number,
+        required : true,
+        // unique : true
     },
     Password :{
         type : String ,
@@ -12,6 +13,11 @@ const userSchema = mongoose.Schema({
     },
     EmployeeCode :{
         type : Number
+    },
+    Role : {
+        type : String,
+        default : "USER",
+        required : true
     }
 },{
     timestamps : true

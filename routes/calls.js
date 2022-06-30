@@ -10,7 +10,7 @@ const MIME_TYPE_MAP = {
 
 }
 const checkAuth = require('../middleware/check-auth');
-const { createIndexes } = require('../models/issues');
+// const { Call } = require('../models/issues');
 const storage = multer.diskStorage({
   destination:(req,file,cb) =>{
     const isvalid = MIME_TYPE_MAP[file.mimetype];
