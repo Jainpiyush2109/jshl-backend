@@ -11,8 +11,10 @@ const registerUser = async (userdetails,res) => {
     const numberRegistered = await validateNumber(userdetails.Number);
     console.log(numberRegistered);
     if(numberRegistered){
-        return res.status(400).json({
+        console.log("user exist");
+        res.status(400).json({
             message : "Username already taken"
+
         });
     }
 
@@ -31,11 +33,11 @@ const registerUser = async (userdetails,res) => {
             Role : role
 
         });    
-        
+        console.log("user crested");
     user.save()
     .then(result => {
         // console.log(result)
-        res.status(201).json({
+        return res.status(201).json({
             message : "user Created",
         });
     });
@@ -46,7 +48,7 @@ const registerUser = async (userdetails,res) => {
 const validateNumber = async Number =>{
     // console.log(Number)
      const user = await User.findOne({Number : Number});
-     console.log(user);
+    //  console.log(user);
      return (user !== null);
 }
 

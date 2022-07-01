@@ -4,7 +4,7 @@ const userSchema = mongoose.Schema({
 
     Number: {
         type : Number,
-        required : true,
+        required : true
         // unique : true
     },
     Password :{

@@ -10,6 +10,16 @@ const User = require('../models/user');
 
 
 router.post("/signup", (req,res,next) => {
+    User.findOne({Number : req.body.Number} )
+        .then(user =>{
+            if(user){
+                return res.status(404).json({  
+                    message : 'User Already Exist'
+                });
+            }else {
+                registerUser(req.body,res);
+            }
+        })
     registerUser(req.body,res);
 });
 
