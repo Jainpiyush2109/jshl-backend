@@ -10,7 +10,7 @@ const User = require('../models/user');
 
 
 router.post("/signup", (req,res,next) => {
-    User.findOne({Number : req.body.Number} )
+    User.findOne({UserId : req.body.UserId} )
         .then(user =>{
             if(user){
                 return res.status(404).json({  
@@ -20,7 +20,7 @@ router.post("/signup", (req,res,next) => {
                 registerUser(req.body,res);
             }
         })
-    registerUser(req.body,res);
+    
 });
 
 
@@ -29,7 +29,7 @@ router.post("/signup", (req,res,next) => {
 router.post("/login" , (req,res,next) =>{
     let fetchedUser ;
 
-    User.findOne({Number : req.body.Number} )
+    User.findOne({UserId : req.body.UserId} )
         .then(user =>{
             if (!user){
                 return res.status(404).json({  
@@ -46,12 +46,11 @@ router.post("/login" , (req,res,next) =>{
                     message : "Password Mismatch"
                 });
             }
-            const token = jwt.sign({Number :fetchedUser.Number , userid : fetchedUser._id , role : fetchedUser.Role} , "hbvhbhjbhvvhebdfufierhuav" ,{expiresIn : "1h"});
+            const token = jwt.sign({UserId :fetchedUser.UserId , Id : fetchedUser._id } , "hbvhbhjbhvvhebdfufierhuav" ,{expiresIn : "1h"});
             res.status(200).json({
                 token : token,
                 expiresIn : 3600,
-                userid : fetchedUser._id,
-                role : fetchedUser.Role
+                user : fetchedUser
             });
         })
         .catch(err => {

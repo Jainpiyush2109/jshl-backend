@@ -42,7 +42,7 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
       ContactNumber:req.body.ContactNumber,
       AlternateMobile : req.body.AlternateMobile,
       Slot : req.body.Slot,
-      User : req.userData.userid  ,
+      User : req.userData.Id  ,
       imagePath : url + "/images/" + req.file.filename 
     }
     
@@ -70,7 +70,7 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
           });
         }); 
       }else {
-      Call.find({User : req.userData.userid}).then(calls => {
+      Call.find({User : req.userData.Id}).then(calls => {
         res.status(200).json({
           message : 'post fetched',
           calls : calls
