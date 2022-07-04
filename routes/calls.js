@@ -10,6 +10,7 @@ const MIME_TYPE_MAP = {
 
 }
 const checkAuth = require('../middleware/check-auth');
+const User = require('../models/user');
 // const { Call } = require('../models/issues');
 const storage = multer.diskStorage({
   destination:(req,file,cb) =>{
@@ -62,8 +63,18 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
   
   router.get("",(req,res,next) => {
       console.log(req.userData);
-      if(req.userData.role == "admin"){
-        Call.find().then(calls => {
+      let Role ;
+      let Department ;
+        User.findById(req.userData.Id).then(user =>{
+          Role = user.Role;
+          Department = user.Department;
+          // console.log(Department ,user.Role);
+
+      })
+      if(Role !== "USER"){
+        // console.log(Department , Role);
+
+        Call.find({Category : "Electricity"}).then(calls => {
           res.status(200).json({
             message : 'post fetched',
             calls : calls
@@ -93,7 +104,22 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
       }
     })
   })
-  
+  router.patch("/:callId" , async (req,res,next) =>{
+    console.log( 'patch request',req.body);
+    const callId = req.params.callId ;
+    const updates = req.body;
+    console.log(updates);
+      const  result = await Call.findByIdAndUpdate(callId , req.body);
+      console.log(result);
+      res.status(200).json({
+        call : result
+      });
+
+    
+
+  })
+
+
   router.put("/:id",multer({storage:storage}).single("image"),(req,res,next) => {
     // // let imagePath = req.body.imagePath;
     // console.log(req.body);

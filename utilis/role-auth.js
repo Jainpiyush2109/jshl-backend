@@ -3,27 +3,11 @@ const bcrypt = require('bcrypt');
 // const head = require ('../models/head');
 
 const jwt = require('jsonwebtoken');
-const Head = require("../models/head");
+// const Head = require("../models/head");
 
 const registerUser = async (userdetails,res) => {
     console.log(userdetails);
-    // const numberRegistered = await validateNumber(userdetails.Number);
-    // console.log(numberRegistered);
-    // if(numberRegistered){
-    //     console.log("user exist");
-    //     res.status(400).json({
-    //         message : "Username already taken"
-
-    //     });
-    // }
-
-    // let adminUser = await checkAdmin(userdetails.Number);
-    // if(adminUser){
-    //     role = "admin";
-    // }else{
-    //     role = "user";
-    // }
-
+    
     bcrypt.hash(userdetails.Password,10)
     .then(hash => {
         const user = new User({
@@ -59,18 +43,19 @@ const registerUser = async (userdetails,res) => {
 const registerTechnician = async (details,res) => {
     console.log(details);
 
-    bcrypt.hash(details.password,10)
+    bcrypt.hash(details.Password,10)
     .then(hash => {
-        const head = new Head({
+        const user = new User({
             UserId : details.UserId,
             Password :hash,
-            Role : details.role,
-            Department : details.department
+            UserName : details.UserName,
+            Role : details.Role,
+            Department : details.Department
 
         });    
 
-        console.log(head);
-    head.save()
+        console.log(user);
+    user.save()
     .then(result => {
         // console.log(result)
         return res.status(201).json({

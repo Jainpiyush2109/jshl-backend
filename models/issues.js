@@ -57,7 +57,13 @@ const callSchema = mongoose.Schema({
         type : String,
         default : "OPEN",
         required : true,
-        enum : ["OPEN" , "CLOSED"]
+        enum : ["OPEN" , "CLOSED","IN-PROGRESS"]
+    },
+    ProgressTime :{
+        type : Date
+    },
+    CloseTime :{
+        type : Date
     }
 },{
     timestamps : true

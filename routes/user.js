@@ -2,7 +2,9 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 
 const jwt = require('jsonwebtoken');
-const {registerUser} =require("../utilis/role-auth")
+const {registerUser} =require("../utilis/role-auth");
+const {registerTechnician} =require("../utilis/role-auth");
+
 
 
 const router = express.Router();
@@ -22,7 +24,29 @@ router.post("/signup", (req,res,next) => {
         })
     
 });
-
+router.post("/addTechnician",(req,res,next) => {
+    console.log(req.body);
+    User.findOne({UserId : req.body.UserId} )
+        .then(user =>{
+            if(user){
+                return res.status(404).json({  
+                    message : 'Head Already Exist'
+                });
+            }
+        })
+    registerTechnician(req.body,res);
+});
+router.get("/:Department",(req,res,next) => {
+    // console.log(req.userData);
+    User.find({Department : req.params.Department , Role : "TECHNICIAN"},{Password:0}).then(users => {
+      res.status(200).json({
+        message : 'post fetched',
+        users : users
+      });
+    });
+   
+    
+});
 
     
 
