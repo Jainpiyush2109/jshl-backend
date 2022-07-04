@@ -12,9 +12,10 @@ module.exports = (req,res,next) => {
             token = req.query.token;
            }
         const decodedToken = jwt.verify(token ,"hbvhbhjbhvvhebdfufierhuav" );
+        
         req.userData = {
-            Name : decodedToken.name ,
-            userid : decodedToken.userid
+            Id : decodedToken.Id ,
+            UserId : decodedToken.UserId
         }
         next();
     }catch(error){

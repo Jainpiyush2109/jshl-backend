@@ -16,15 +16,15 @@ const callSchema = mongoose.Schema({
     },
     Address1: {
         type: String,
-        // required : true
+        required : true
     },
     Address2 :{
         type: String,
-        // required : true
+        required : true
     },
     SubCategory:{
         type: String,
-        // required :true
+        required :true
     },
     Description:{
         type: String,
@@ -47,14 +47,24 @@ const callSchema = mongoose.Schema({
     },
     User :{
         type : mongoose.Schema.Types.ObjectId,
-        ref : "User"
-        // required : true
+        ref : "User",
+        required : true
     },
     imagePath : {
         type : String 
+    },
+    status : {
+        type : String,
+        default : "OPEN",
+        required : true,
+        enum : ["OPEN" , "CLOSED","IN-PROGRESS"]
+    },
+    ProgressTime :{
+        type : Date
+    },
+    CloseTime :{
+        type : Date
     }
-
-
 },{
     timestamps : true
 });

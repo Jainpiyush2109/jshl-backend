@@ -2,7 +2,12 @@ const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
 
-    Name: {
+    UserId: {
+        type : Number,
+        required : true
+        // unique : true
+    },
+    UserName: {
         type : String,
         required : true
     },
@@ -10,8 +15,14 @@ const userSchema = mongoose.Schema({
         type : String ,
         required : true
     },
-    EmployeeCode :{
-        type : Number
+    Department :{
+        type : String,
+        default : "Quarters"
+    },
+    Role : {
+        type : String,
+        default : "USER",
+        required : true
     }
 },{
     timestamps : true
