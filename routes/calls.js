@@ -63,31 +63,33 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
   
   router.get("",(req,res,next) => {
       console.log(req.userData);
-      let Role ;
-      let Department ;
+      var Role ;
+      var Department ;
         User.findById(req.userData.Id).then(user =>{
           Role = user.Role;
           Department = user.Department;
-          // console.log(Department ,user.Role);
+          console.log(Department ,user.Role);
+
+          if(Role !== "USER"){
+            // console.log(Department , Role);
+            Call.find({Category : "Electricity"}).then(calls => {
+              res.status(200).json({
+                message : 'post fetched',
+                calls : calls
+              });
+            }); 
+          }else {
+          Call.find({User : req.userData.Id}).then(calls => {
+            res.status(200).json({
+              message : 'post fetched',
+              calls : calls
+            });
+          });
+        }  
 
       })
-      if(Role !== "USER"){
-        // console.log(Department , Role);
-
-        Call.find({Category : "Electricity"}).then(calls => {
-          res.status(200).json({
-            message : 'post fetched',
-            calls : calls
-          });
-        }); 
-      }else {
-      Call.find({User : req.userData.Id}).then(calls => {
-        res.status(200).json({
-          message : 'post fetched',
-          calls : calls
-        });
-      });
-    }  
+      console.log("Piyush" ,Role)
+      
       
   });
   
@@ -110,10 +112,9 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
     const updates = req.body;
     console.log(updates);
       const  result = await Call.findByIdAndUpdate(callId , req.body);
-      console.log(result);
-      res.status(200).json({
-        call : result
-      });
+      const  call = await Call.findById(callId);
+      console.log(call);
+      res.status(200).json(call);
 
     
 
