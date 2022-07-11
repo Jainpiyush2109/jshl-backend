@@ -48,6 +48,40 @@ router.get("/:Department", (req, res, next) => {
 
 });
 
+router.patch("/:Id" , async (req,res,next) =>{
+    console.log( 'patch request', req.body);
+    const Id = req.params.Id ;
+    // const Password = req.body.Password;
+    const NewPassword = req.body.NewPassword;
+    // console.log(Password);
+      const  user = await User.findById(Id);
+      console.log(user);    
+      const passCheck = await bcrypt.compare(req.body.Password, user.Password);
+      if(passCheck){
+
+        bcrypt.hash(req.body.NewPassword,10)
+    .then(hash => {
+        User.findByIdAndUpdate(Id , {Password : hash}).then(updatedUser=>{
+            console.log(updatedUser);
+            return res.status(200).json({
+                message : ' Password changed'
+    
+            });
+        })
+        
+    })
+      }else{
+        return res.status(401).json({
+            message : 'Wrong Password'
+        })
+      }
+    //   const  call = await Call.findById(callId);
+    //   .json(call);
+
+    
+
+  })
+
 
 
 router.post("/login", async(req, res, next) => {
@@ -61,7 +95,7 @@ router.post("/login", async(req, res, next) => {
         });
     }
 
-    const passCheck = bcrypt.compare(req.body.Password, user.Password);
+    const passCheck = await bcrypt.compare(req.body.Password, user.Password);
 
     if(!passCheck){
         return res.status(401).json({

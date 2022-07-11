@@ -41,13 +41,16 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
       Description:req.body.Description ,
       ContactPerson:req.body.ContactPerson , 
       ContactNumber:req.body.ContactNumber,
-      AlternateMobile : req.body.AlternateMobile,
+      // AlternateMobile : req.body.AlternateMobile,
       Slot : req.body.Slot,
       User : req.userData.Id  ,
-      imagePath : url + "/images/" + req.file.filename 
+      imagePath : req.file ? "images/" + req.file.filename: ""
     }
     
-      ) ; 
+      ) ;
+      if(req.body.AlternateMobile && req.body.AlternateMobile !== "null") {
+        call.AlternateMobile = req.body.AlternateMobile;
+      }
     call.save().then(createdCall =>{
       res.status(201).json({
         message: 'Post added Successfully',
