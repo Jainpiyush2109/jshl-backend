@@ -36,17 +36,17 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
       Name:req.body.Name ,
       MobileNumber:req.body.MobileNumber ,
       Address1:req.body.Address1 ,
-      Address2:req.body.Address2 , 
-      SubCategory:req.body.SubCategory , 
+      Address2:req.body.Address2 ,
+      SubCategory:req.body.SubCategory ,
       Description:req.body.Description ,
-      ContactPerson:req.body.ContactPerson , 
+      ContactPerson:req.body.ContactPerson ,
       ContactNumber:req.body.ContactNumber,
       // AlternateMobile : req.body.AlternateMobile,
       Slot : req.body.Slot,
       User : req.userData.Id  ,
       imagePath : req.file ? "images/" + req.file.filename: ""
     }
-    
+
       ) ;
       if(req.body.AlternateMobile && req.body.AlternateMobile !== "null") {
         call.AlternateMobile = req.body.AlternateMobile;
@@ -60,10 +60,10 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
         }
       });
     })
-    
-  
+
+
   });
-  
+
   router.get("",(req,res,next) => {
       console.log(req.userData);
       var Role ;
@@ -75,12 +75,12 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
 
           if(Role !== "USER"){
             // console.log(Department , Role);
-            Call.find({Category : "Electricity"}).then(calls => {
+            Call.find({Category : Department}).then(calls => {
               res.status(200).json({
                 message : 'post fetched',
                 calls : calls
               });
-            }); 
+            });
           }else {
           Call.find({User : req.userData.Id}).then(calls => {
             res.status(200).json({
@@ -88,14 +88,14 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
               calls : calls
             });
           });
-        }  
+        }
 
       })
       console.log("Piyush" ,Role)
-      
-      
+
+
   });
-  
+
   router.get("/:id" , (req,res,next) =>{
     Call.findById(req.params.id).then(call =>{
       if(call){
@@ -119,7 +119,7 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
       console.log(call);
       res.status(200).json(call);
 
-    
+
 
   })
 
@@ -130,7 +130,7 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
     let imagePath;
     if(req.file){
       const url =req.protocol + '://' +req.get("host");
-      imagePath = url + "/images/" + req.file.filename 
+      imagePath = url + "/images/" + req.file.filename
     }
     // console.log(imagePath);
     const call = new Call({
@@ -139,36 +139,36 @@ router.post("" , checkAuth, multer({storage:storage}).single("image"), (req,res,
       Name:req.body.Name ,
       MobileNumber:req.body.MobileNumber ,
       Address1:req.body.Address1 ,
-      Address2:req.body.Address2 , 
-      SubCategory:req.body.SubCategory , 
+      Address2:req.body.Address2 ,
+      SubCategory:req.body.SubCategory ,
       Description:req.body.Description ,
-      ContactPerson:req.body.ContactPerson , 
+      ContactPerson:req.body.ContactPerson ,
       ContactNumber:req.body.ContactNumber,
       AlternateMobile : req.body.AlternateMobile,
       Slot : req.body.Slot,
       User : req.body.User,
-      imagePath : imagePath 
+      imagePath : imagePath
     }
 
        ) ;
-  
-    Call.updateOne({_id : req.params.id ,User : req.userData.userid},call).then(result =>{ 
+
+    Call.updateOne({_id : req.params.id ,User : req.userData.userid},call).then(result =>{
         res.status(200).json({
           message : 'Call Updated'
         });
-      
-    
+
+
     });
   });
-  
+
   router.delete("/:id" ,checkAuth, (req,res,next) => {
     Call.deleteOne({_id : req.params.id , User : req.userData.userid}).then(result=>{
         res.status(200).json({
           message : 'Call Deleted'
         });
-      
+
     });
-    
+
   });
 
   module.exports = router;

@@ -28,7 +28,7 @@ const admins = [
         UserId : 1111111111,
         UserName : "ElectricityAdmin",
         Password :hash,
-        Department : "Electricty",
+        Department : "Electricity",
         Role : "admin"
     }),
     new user ({
